@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Operations Club — Induction Challenge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#1b1f23;
+    --charcoal-2:#242a30;
+    --steel:#2c4a5e;
+    --yellow:#f2b705;
+    --yellow-dim:#c99904;
+    --off-white:#f5f1e8;
+    --paper:#eee9dc;
+    --green:#3f8f5c;
+    --red:#c1440e;
+    --line:#3a4048;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--charcoal);
+    color:var(--off-white);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:36px 36px;
+    background-position:-1px -1px;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:22px 18px 60px;
+  }
+  h1,h2,h3{font-family:'Bebas Neue',sans-serif; letter-spacing:0.03em; margin:0;}
+  .hazard{
+    height:10px;
+    width:100%;
+    background:repeating-linear-gradient(135deg, var(--yellow) 0 14px, var(--charcoal) 14px 28px);
+    border-radius:2px;
+    margin-bottom:18px;
+  }
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:8px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand .mark{
+    width:44px;height:44px;
+    border-radius:8px;
+    background:var(--yellow);
+    color:var(--charcoal);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;
+    flex-shrink:0;
+  }
+  .brand .name{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:#b8bcc2;
+    text-transform:uppercase;
+  }
+  .brand .name b{color:var(--yellow); display:block; font-size:13px; letter-spacing:0.08em;}
+
+  .stations{
+    display:flex;
+    gap:6px;
+    margin:18px 0 26px;
+  }
+  .station-dot{
+    flex:1;
+    height:6px;
+    border-radius:3px;
+    background:var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .station-dot.done{background:var(--green);}
+  .station-dot.active{background:var(--yellow-dim);}
+  .station-dot.active::after{
+    content:'';
+    position:absolute; inset:0;
+    background:var(--yellow);
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.4;} 50%{opacity:1;}}
+
+  .card{
+    background:var(--charcoal-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:26px 24px;
+    margin-bottom:18px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--yellow);
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow .num{
+    background:var(--yellow);
+    color:var(--charcoal);
+    font-family:'Bebas Neue',sans-serif;
+    font-size:14px;
+    width:22px;height:22px;
+    border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    letter-spacing:0;
+  }
+  .card h2{font-size:30px; color:var(--off-white); margin-bottom:10px;}
+  .card p.brief{color:#c7cbd1; line-height:1.55; font-size:15px; margin:0 0 18px;}
+  .divider{height:1px; background:var(--line); margin:18px 0;}
+
+  .route{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:10px 14px;
+    align-items:center;
+    background:var(--charcoal);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:border-color .15s, transform .1s;
+  }
+  .route:hover{border-color:var(--yellow-dim);}
+  .route:active{transform:scale(0.99);}
+  .route .tag{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;
+    color:var(--yellow);
+    width:34px;
+  }
+  .route .steps{font-family:'IBM Plex Mono',monospace; font-size:13px; color:#c7cbd1;}
+  .route .total{font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--off-white); font-size:14px;}
+
+  .opt-grid{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    background:var(--charcoal);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    cursor:pointer;
+    font-size:15px;
+    line-height:1.4;
+    transition:border-color .15s, transform .1s;
+  }
+  .opt:hover{border-color:var(--yellow-dim);}
+  .opt:active{transform:scale(0.99);}
+  .opt.correct{border-color:var(--green); background:rgba(63,143,92,0.16);}
+  .opt.wrong{border-color:var(--red); background:rgba(193,68,14,0.16);}
+  .opt.disabled{pointer-events:none; opacity:0.55;}
+
+  .feedback{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;
+    line-height:1.5;
+    padding:12px 14px;
+    border-radius:8px;
+    margin-top:14px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.good{background:rgba(63,143,92,0.14); border:1px solid var(--green); color:#cdeedb;}
+  .feedback.bad{background:rgba(193,68,14,0.14); border:1px solid var(--red); color:#f5d3c2;}
+
+  .unscramble-item{
+    background:var(--charcoal);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    margin-bottom:12px;
+  }
+  .scramble-word{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    letter-spacing:0.12em;
+    color:var(--yellow);
+    margin-bottom:10px;
+  }
+  .unscramble-item input{
+    width:100%;
+    background:var(--charcoal-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--off-white);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:15px;
+    padding:10px 12px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .unscramble-item input:focus{outline:none; border-color:var(--yellow);}
+  .hint{font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a8f97; margin-top:6px;}
+
+  .btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:var(--yellow);
+    color:var(--charcoal);
+    border:none;
+    border-radius:7px;
+    padding:13px 22px;
+    cursor:pointer;
+    transition:transform .1s, background .15s;
+  }
+  .btn:hover{background:#ffc620;}
+  .btn:active{transform:scale(0.97);}
+  .btn.secondary{
+    background:transparent;
+    color:var(--off-white);
+    border:1px solid var(--line);
+  }
+  .btn.secondary:hover{border-color:var(--yellow-dim);}
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .btn-row{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;}
+
+  .score-pill{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:#c7cbd1;
+    background:var(--charcoal);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:6px 14px;
+    white-space:nowrap;
+  }
+  .score-pill b{color:var(--yellow);}
+
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .intro-hero{
+    text-align:center;
+    padding:34px 20px 10px;
+  }
+  .intro-hero .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--yellow);
+    letter-spacing:0.2em;
+    font-size:12px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .intro-hero h1{font-size:52px; line-height:0.98; color:var(--off-white);}
+  .intro-hero h1 span{color:var(--yellow);}
+  .intro-hero .sub{color:#c7cbd1; font-size:15px; max-width:520px; margin:16px auto 0; line-height:1.6;}
+  .gauge-row{
+    display:flex; gap:10px; justify-content:center; margin:26px 0 6px; flex-wrap:wrap;
+  }
+  .gauge{
+    background:var(--charcoal-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 16px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:#9aa0a8;
+    text-align:center;
+    min-width:100px;
+  }
+  .gauge b{display:block; color:var(--yellow); font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.03em;}
+
+  .sticky-links{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    background:var(--charcoal);
+    padding:10px 0 8px;
+    margin-bottom:4px;
+    border-bottom:1px solid var(--line);
+  }
+  .sticky-links a{
+    flex:1;
+    min-width:118px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    color:var(--off-white);
+    background:var(--charcoal-2);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:8px 10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    transition:border-color .15s, transform .1s;
+  }
+  .sticky-links a:hover{border-color:var(--yellow-dim); transform:translateY(-1px);}
+  .sticky-links a.reg{border-color:var(--yellow); background:rgba(242,183,5,0.1); color:var(--yellow); font-weight:600;}
+  .sticky-links .ic{
+    width:22px; height:22px;
+    border-radius:5px;
+    background:var(--yellow);
+    color:var(--charcoal);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:11px;
+    flex-shrink:0;
+  }
+  .sticky-links a.reg .ic{background:var(--charcoal); color:var(--yellow); border:1px solid var(--yellow);}
+  @media (max-width:480px){
+    .sticky-links a{font-size:10.5px; padding:7px 8px;}
+  }
+
+  .final-badge{
+    text-align:center;
+    padding:20px 0 6px;
+  }
+  .final-badge .ring{
+    width:120px; height:120px;
+    border-radius:50%;
+    border:4px solid var(--yellow);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:34px;
+    color:var(--yellow);
+    background:radial-gradient(circle, rgba(242,183,5,0.12), transparent 70%);
+  }
+  .final-badge h2{font-size:38px; margin-bottom:8px;}
+  .final-badge p{color:#c7cbd1; font-size:15px; line-height:1.6; max-width:480px; margin:0 auto 22px;}
+
+  .link-grid{
+    display:flex; flex-direction:column; gap:12px; margin-top:10px;
+  }
+  .link-card{
+    display:flex; align-items:center; gap:14px;
+    background:var(--charcoal);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:15px 16px;
+    text-decoration:none;
+    color:var(--off-white);
+    transition:border-color .15s, transform .1s;
+  }
+  .link-card:hover{border-color:var(--yellow-dim); transform:translateY(-1px);}
+  .link-card .icon{
+    width:38px; height:38px;
+    border-radius:8px;
+    background:var(--yellow);
+    color:var(--charcoal);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:16px;
+  }
+  .link-card .t{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:#9aa0a8;}
+  .link-card .h{font-size:15.5px; font-weight:600; margin-top:2px;}
+  .link-card.primary{border-color:var(--yellow); background:rgba(242,183,5,0.08);}
+  .link-card.primary .h{color:var(--yellow);}
+
+  footer.tail{
+    text-align:center;
+    margin-top:30px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:#6b7078;
+    letter-spacing:0.08em;
+  }
+
+  @media (max-width:480px){
+    .intro-hero h1{font-size:38px;}
+    .card{padding:20px 16px;}
+    .route{grid-template-columns:auto 1fr; }
+    .route .total{grid-column:2; justify-self:end; margin-top:2px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="mark">改</div>
+      <div class="name"><b>Kaizen Operations Club</b>SMS · Induction Floor</div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="score-pill" id="timerPill" style="display:none;">⏱ <b id="timerVal">0:00</b></div>
+      <div class="score-pill" id="scorePill">Score <b>0</b> / 0</div>
+    </div>
+  </header>
+  <div class="sticky-links">
+    <a class="reg" href="https://forms.gle/Nm4p8jm63GvmxcKx5" target="_blank" rel="noopener"><span class="ic">GO</span>Register</a>
+    <a href="https://www.instagram.com/kaizen_operationsclub_sms?igsh=YzNma2czejZhMXRs" target="_blank" rel="noopener"><span class="ic">IG</span>Instagram</a>
+    <a href="https://www.linkedin.com/company/kaizenoperationsclubsms/" target="_blank" rel="noopener"><span class="ic">IN</span>LinkedIn</a>
+  </div>
+
+  <div class="hazard"></div>
+
+  <div class="stations" id="stationTrack"></div>
+
+  <!-- INTRO -->
+  <section class="screen active" id="screen-intro">
+    <div class="intro-hero">
+      <div class="kicker">Welcome to the Club</div>
+      <h1>THE INDUCTION<br><span>FACTORY FLOOR</span></h1>
+      <p class="sub">5 quick, easy puzzles — no business background needed. Everything is explained as you go. Just think it through logically and have fun. Fastest correct finish gets bragging rights!</p>
+      <div class="gauge-row">
+        <div class="gauge"><b>05</b>Puzzles</div>
+        <div class="gauge"><b>~5</b>Minutes</div>
+        <div class="gauge"><b>0</b>Prior Knowledge</div>
+      </div>
+      <div style="max-width:320px; margin:24px auto 0; text-align:left;">
+        <label class="hint" style="display:block; margin-bottom:6px; font-size:12px;">Enter your name (for the leaderboard)</label>
+        <input type="text" id="playerName" placeholder="Your name" style="width:100%; background:var(--charcoal-2); border:1px solid var(--line); border-radius:6px; color:var(--off-white); font-family:'IBM Plex Mono',monospace; font-size:15px; padding:11px 12px;">
+      </div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn" onclick="startGame()">Start the Challenge →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATION 1: MAZE / ROUTING -->
+  <section class="screen" id="screen-1">
+    <div class="card">
+      <div class="eyebrow"><span class="num">1</span>Puzzle 1 · Warm-Up</div>
+      <h2>Pick the Cheapest Route</h2>
+      <p class="brief">A product travels: <b>Supplier → Factory → Warehouse → Shop</b>. There are 3 possible routes it can take. Each route lists what it costs at every step. Just add up each route and click the one with the <b>lowest total</b>.</p>
+      <div class="opt-grid" id="mazeOptions"></div>
+      <div class="feedback" id="fb1"></div>
+      <div class="btn-row">
+        <button class="btn" id="next1" onclick="nextScreen(2)" disabled>Next Station →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATION 2: BCG / ANSOFF -->
+  <section class="screen" id="screen-2">
+    <div class="card">
+      <div class="eyebrow"><span class="num">2</span>Puzzle 2 · Which Bucket?</div>
+      <h2>Sort the Product</h2>
+      <p class="brief">Businesses often sort their products into 4 simple buckets based on two things: <b>how well it's selling right now</b>, and <b>how fast that market is growing</b>. Here's a product that <b>sells really well</b>, but the market around it has <b>stopped growing</b> — it's steady, reliable, and doesn't need extra investment. Which bucket fits best?</p>
+      <div class="opt-grid" id="bcgOptions"></div>
+      <div class="feedback" id="fb2a"></div>
+    </div>
+    <div class="card" id="ansoffCard" style="display:none;">
+      <div class="eyebrow"><span class="num">2</span>Puzzle 2 · Growth Move</div>
+      <h2>Pick the Move</h2>
+      <p class="brief">If a business wants to grow, it can either sell something <b>new</b> or sell somewhere <b>new</b>. Here's the scenario: the club keeps the <b>same event/product</b> it already runs, but launches it at a <b>college it has never reached before</b>. What kind of growth move is that?</p>
+      <div class="opt-grid" id="ansoffOptions"></div>
+      <div class="feedback" id="fb2b"></div>
+      <div class="btn-row">
+        <button class="btn" id="next2" onclick="nextScreen(3)" disabled>Next Station →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATION 3: UNSCRAMBLE -->
+  <section class="screen" id="screen-3">
+    <div class="card">
+      <div class="eyebrow"><span class="num">3</span>Puzzle 3 · Word Play</div>
+      <h2>Unscramble the Words</h2>
+      <p class="brief">4 jumbled-up words below. All 4 are words you'll hear a lot in the club — use the hint if you're stuck. Type your answer in each box, capital or small letters both work.</p>
+      <div id="unscrambleList"></div>
+      <div class="btn-row">
+        <button class="btn" id="check3" onclick="checkUnscramble()">Check Answers</button>
+        <button class="btn secondary" id="next3" onclick="nextScreen(4)" disabled>Next Station →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATION 4: ANALYTICS -->
+  <section class="screen" id="screen-4">
+    <div class="card">
+      <div class="eyebrow"><span class="num">4</span>Puzzle 4 · Think It Through</div>
+      <h2>Who Earns More?</h2>
+      <p class="brief"><b>Shop A</b> makes ₹50 profit per item, but sells slowly.<br><b>Shop B</b> makes only ₹20 profit per item, but sells much faster and in bigger volumes.<br>Which shop is definitely earning more overall?</p>
+      <div class="opt-grid" id="roeOptions"></div>
+      <div class="feedback" id="fb4a"></div>
+    </div>
+    <div class="card" id="pricingCard" style="display:none;">
+      <div class="eyebrow"><span class="num">4</span>Puzzle 4 · Pricing Sense</div>
+      <h2>Price It Right</h2>
+      <p class="brief">A canteen sells samosas for ₹20 and sells 100 a day. They're thinking of dropping the price to sell more. If they price it <b>too low</b>, they lose money per samosa even if they sell a lot more. If they price it <b>too high</b>, hardly anyone buys. What's the smartest way to find the best price?</p>
+      <div class="opt-grid" id="pricingOptions"></div>
+      <div class="feedback" id="fb4b"></div>
+      <div class="btn-row">
+        <button class="btn" id="next4" onclick="nextScreen(5)" disabled>Next Station →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATION 5: CAPACITY PUZZLE -->
+  <section class="screen" id="screen-5">
+    <div class="card">
+      <div class="eyebrow"><span class="num">5</span>Puzzle 5 · Final Challenge</div>
+      <h2>Crack the Code</h2>
+      <p class="brief">Each icon stands for a number. Use the first 3 lines to figure out the value of each icon — then use those values to solve the last line. Remember: multiply before you add!</p>
+      <div class="opt-grid" style="gap:8px; margin-bottom:16px;">
+        <div class="route" style="cursor:default;"><span class="tag">⚙️⚙️⚙️</span><span class="steps">Machine + Machine + Machine</span><span class="total">= 60</span></div>
+        <div class="route" style="cursor:default;"><span class="tag">⚙️📦📦</span><span class="steps">Machine + Pallet + Pallet</span><span class="total">= 30</span></div>
+        <div class="route" style="cursor:default;"><span class="tag">📦⚙︎⚙︎</span><span class="steps">Pallet + Gear + Gear</span><span class="total">= 15</span></div>
+        <div class="route" style="cursor:default;"><span class="tag">📦⚙️✕⚙︎</span><span class="steps">Pallet + (Machine × Gear)</span><span class="total">= ?</span></div>
+      </div>
+      <div class="opt-grid" id="capacityOptions"></div>
+      <div class="feedback" id="fb5"></div>
+      <div class="btn-row">
+        <button class="btn" id="next5" onclick="finishGame()" disabled>Finish Shift →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="screen" id="screen-final">
+    <div class="card">
+      <div class="final-badge">
+        <div class="ring" id="finalRing">–</div>
+        <h2>Shift Complete.</h2>
+        <p id="finalMsg">You've made it through the floor. That's the mindset the Kaizen Operations Club runs on — small, continuous improvements, solved one station at a time.</p>
+        <div class="gauge-row" style="margin-top:6px;">
+          <div class="gauge"><b id="finalTime">0:00</b>Your Time</div>
+          <div class="gauge"><b id="finalScore">0/0</b>Your Score</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <p class="brief" style="text-align:center; margin-bottom:6px;" id="submitStatus">⏳ Sending your result to the coordinators…</p>
+      <p class="brief" style="text-align:center; margin-bottom:10px;">📸 Screenshot this screen and send it to the club coordinator — that's how we'll know your time and rank you on the leaderboard!</p>
+      <div class="btn-row" style="justify-content:center; margin-top:0; margin-bottom:22px;">
+        <button class="btn secondary" id="copyResultBtn" onclick="copyResult()">Copy My Result 📋</button>
+      </div>
+      <p class="brief" style="text-align:center; margin-bottom:6px;">Now make it official — follow along and register below.</p>
+      <div class="link-grid">
+        <a class="link-card primary" href="https://forms.gle/Nm4p8jm63GvmxcKx5" target="_blank" rel="noopener">
+          <div class="icon">GO</div>
+          <div>
+            <div class="t">Registration</div>
+            <div class="h">Register for the Club (Google Form)</div>
+          </div>
+        </a>
+        <a class="link-card" href="https://www.instagram.com/kaizen_operationsclub_sms?igsh=YzNma2czejZhMXRs" target="_blank" rel="noopener">
+          <div class="icon">IG</div>
+          <div>
+            <div class="t">Instagram</div>
+            <div class="h">@kaizen_operationsclub_sms</div>
+          </div>
+        </a>
+        <a class="link-card" href="https://www.linkedin.com/company/kaizenoperationsclubsms/" target="_blank" rel="noopener">
+          <div class="icon">IN</div>
+          <div>
+            <div class="t">LinkedIn</div>
+            <div class="h">Kaizen Operations Club SMS</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="tail">KAIZEN OPERATIONS CLUB · SMS &nbsp;—&nbsp; 改善 · CONTINUOUS IMPROVEMENT</footer>
+</div>
+
+<script>
+// Google Apps Script Web App URL — receives each student's score automatically.
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyz6SPtZU16PFQRbF_QYaRiqx0XrYahf4BzPK5C6CiEVZ7sW6Pn9zLF_9oRJ7fXJnuwUA/exec';
+
+let score = 0;
+let totalPossible = 0;
+const stationOrder = [1,2,3,4,5];
+let currentStation = 0;
+let playerName = 'Player';
+let startTime = null;
+let timerInterval = null;
+let finalElapsedLabel = '0:00';
+
+function formatTime(ms){
+  const totalSec = Math.floor(ms/1000);
+  const m = Math.floor(totalSec/60);
+  const s = totalSec%60;
+  return m+':'+(s<10?'0':'')+s;
+}
+
+function renderTrack(){
+  const track = document.getElementById('stationTrack');
+  track.innerHTML = '';
+  for(let i=1;i<=5;i++){
+    const d = document.createElement('div');
+    d.className = 'station-dot';
+    if(currentStation > i) d.classList.add('done');
+    else if(currentStation === i) d.classList.add('active');
+    track.appendChild(d);
+  }
+}
+
+function updateScorePill(){
+  document.getElementById('scorePill').innerHTML = 'Score <b>'+score+'</b> / '+totalPossible;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startGame(){
+  const nameInput = document.getElementById('playerName');
+  playerName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Player';
+  currentStation = 1;
+  renderTrack();
+  showScreen('screen-1');
+  startTime = Date.now();
+  document.getElementById('timerPill').style.display = 'inline-block';
+  document.getElementById('timerVal').textContent = '0:00';
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    document.getElementById('timerVal').textContent = formatTime(Date.now()-startTime);
+  }, 1000);
+}
+
+function nextScreen(n){
+  currentStation = n;
+  renderTrack();
+  showScreen('screen-'+n);
+}
+
+function finishGame(){
+  currentStation = 6;
+  renderTrack();
+  if(timerInterval) clearInterval(timerInterval);
+  const elapsedMs = startTime ? (Date.now()-startTime) : 0;
+  finalElapsedLabel = formatTime(elapsedMs);
+  const pct = Math.round((score/totalPossible)*100);
+  let title, msg;
+  if(pct >= 85){ title='FLOOR LEAD'; msg='Elite run — '+score+'/'+totalPossible+'. You picked this up fast!'; }
+  else if(pct >= 60){ title='SHIFT PASS'; msg='Solid work — '+score+'/'+totalPossible+'. You\'ve got good instincts already.'; }
+  else { title='TRAINEE'; msg='You scored '+score+'/'+totalPossible+'. Everyone starts here — that\'s exactly what induction is for.'; }
+  document.getElementById('finalRing').textContent = pct+'%';
+  document.getElementById('finalMsg').textContent = msg;
+  document.querySelector('#screen-final h2').textContent = title.replace('_',' ');
+  document.getElementById('finalTime').textContent = finalElapsedLabel;
+  document.getElementById('finalScore').textContent = score+'/'+totalPossible;
+  showScreen('screen-final');
+  submitScore(pct);
+}
+
+// Automatically sends the result to the coordinators' Google Sheet.
+// The student does not need to do anything — this fires once, right when they finish.
+function submitScore(pct){
+  const statusEl = document.getElementById('submitStatus');
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('PASTE_YOUR') === 0){
+    if(statusEl) statusEl.textContent = '⚠️ Leaderboard isn\'t connected yet — ask a coordinator to finish setup.';
+    return;
+  }
+  const payload = {
+    name: playerName,
+    score: score,
+    total: totalPossible,
+    percent: pct,
+    time: finalElapsedLabel,
+    submittedAt: new Date().toISOString()
+  };
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors', // Apps Script Web Apps don't return readable CORS headers; fire-and-forget
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids a CORS preflight
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✅ Result sent to the coordinators — you\'re on the leaderboard!';
+  }).catch(()=>{
+    if(statusEl) statusEl.style.display = 'none';
+  });
+}
+
+function copyResult(){
+  const text = 'KAIZEN OPERATIONS CLUB — INDUCTION RESULT\nName: '+playerName+'\nScore: '+score+'/'+totalPossible+'\nTime: '+finalElapsedLabel;
+  const btn = document.getElementById('copyResultBtn');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{
+      btn.textContent = 'Copied ✓ Now paste & send it!';
+      setTimeout(()=>{ btn.textContent = 'Copy My Result 📋'; }, 2500);
+    }).catch(()=>{
+      btn.textContent = 'Couldn\'t copy — screenshot instead';
+    });
+  } else {
+    btn.textContent = 'Couldn\'t copy — screenshot instead';
+  }
+}
+
+function lockOptions(container){
+  container.querySelectorAll('.opt, .route').forEach(el=>el.classList.add('disabled'));
+}
+
+// ---------- STATION 1: MAZE ----------
+const routes = [
+  {label:'A', legs:[12,9,14,7], correct:false},
+  {label:'B', legs:[8,10,6,9], correct:true},
+  {label:'C', legs:[15,11,8,12], correct:false}
+];
+function buildMaze(){
+  totalPossible += 1;
+  const box = document.getElementById('mazeOptions');
+  box.innerHTML = '';
+  routes.forEach(r=>{
+    const total = r.legs.reduce((a,b)=>a+b,0);
+    const div = document.createElement('div');
+    div.className = 'route';
+    div.innerHTML = '<span class="tag">'+r.label+'</span><span class="steps">Supplier→Mfr '+r.legs[0]+' · Mfr→Dist '+r.legs[1]+' · Dist→Mkt '+r.legs[2]+' · Delay cost '+r.legs[3]+'</span><span class="total">= '+total+'</span>';
+    div.onclick = ()=>{
+      lockOptions(box);
+      const fb = document.getElementById('fb1');
+      fb.classList.add('show');
+      if(r.correct){
+        div.classList.add('correct');
+        score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — Route '+r.label+' totals '+total+', the lowest landed cost. Least-cost routing beats the shortest-looking path.';
+      } else {
+        div.classList.add('wrong');
+        fb.classList.add('bad');
+        const correctRoute = routes.find(x=>x.correct);
+        const correctTotal = correctRoute.legs.reduce((a,b)=>a+b,0);
+        fb.textContent = 'Not quite — Route '+r.label+' costs '+total+'. Route '+correctRoute.label+' is cheapest at '+correctTotal+'.';
+      }
+      updateScorePill();
+      document.getElementById('next1').disabled = false;
+    };
+    box.appendChild(div);
+  });
+}
+
+// ---------- STATION 2: BCG ----------
+const bcgOpts = [
+  {t:'"Star" — sells great, market still growing fast', correct:false},
+  {t:'"Cash Cow" — sells great, market has stopped growing', correct:true},
+  {t:'"Question Mark" — barely selling, but market is growing fast', correct:false},
+  {t:'"Dog" — barely selling, market has stopped growing', correct:false},
+];
+function buildBCG(){
+  totalPossible += 1;
+  const box = document.getElementById('bcgOptions');
+  box.innerHTML = '';
+  bcgOpts.forEach(o=>{
+    const d = document.createElement('div');
+    d.className='opt';
+    d.textContent = o.t;
+    d.onclick = ()=>{
+      lockOptions(box);
+      const fb = document.getElementById('fb2a');
+      fb.classList.add('show');
+      if(o.correct){
+        d.classList.add('correct'); score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — that\'s the "Cash Cow": already winning, market just isn\'t growing anymore. It steadily earns money without needing more investment.';
+      } else {
+        d.classList.add('wrong'); fb.classList.add('bad');
+        fb.textContent = 'It\'s the "Cash Cow" — selling well, but the market has stopped growing, so it just brings in steady, reliable income.';
+      }
+      updateScorePill();
+      document.getElementById('ansoffCard').style.display='block';
+    };
+    box.appendChild(d);
+  });
+}
+
+// ---------- STATION 2: ANSOFF ----------
+const ansoffOpts = [
+  {t:'Selling the same thing to the same crowd, just harder', correct:false},
+  {t:'Selling the same thing to a brand-new crowd', correct:true},
+  {t:'Selling something new to the same old crowd', correct:false},
+  {t:'Selling something new to a brand-new crowd', correct:false},
+];
+function buildAnsoff(){
+  totalPossible += 1;
+  const box = document.getElementById('ansoffOptions');
+  box.innerHTML = '';
+  ansoffOpts.forEach(o=>{
+    const d = document.createElement('div');
+    d.className='opt';
+    d.textContent = o.t;
+    d.onclick = ()=>{
+      lockOptions(box);
+      const fb = document.getElementById('fb2b');
+      fb.classList.add('show');
+      if(o.correct){
+        d.classList.add('correct'); score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — same product, new audience. That\'s the fastest way to grow without reinventing anything.';
+      } else {
+        d.classList.add('wrong'); fb.classList.add('bad');
+        fb.textContent = 'It\'s "same thing, new crowd" — you keep the product exactly as it is, and just find people who haven\'t seen it yet.';
+      }
+      updateScorePill();
+      document.getElementById('next2').disabled = false;
+    };
+    box.appendChild(d);
+  });
+}
+
+// ---------- STATION 3: UNSCRAMBLE ----------
+const scrambles = [
+  {scrambled:'YTNROEINV', answer:'INVENTORY', hint:'Stock waiting to be used or sold'},
+  {scrambled:'RGMENAENST', answer:'MANAGEMENT', hint:'Planning, organizing, and controlling resources'},
+  {scrambled:'NOIOATPERS', answer:'OPERATIONS', hint:'The function that turns inputs into outputs'},
+  {scrambled:'REPSCSO', answer:'PROCESS', hint:'A sequence of steps that creates value'},
+];
+function buildUnscramble(){
+  totalPossible += scrambles.length;
+  const list = document.getElementById('unscrambleList');
+  list.innerHTML = '';
+  scrambles.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className = 'unscramble-item';
+    div.innerHTML = '<div class="scramble-word">'+s.scrambled+'</div>'+
+      '<input type="text" id="scr'+i+'" placeholder="Type your answer">'+
+      '<div class="hint">Hint: '+s.hint+'</div>';
+    list.appendChild(div);
+  });
+}
+function checkUnscramble(){
+  let allFilled = true;
+  let roundScore = 0;
+  scrambles.forEach((s,i)=>{
+    const input = document.getElementById('scr'+i);
+    const val = input.value.trim().toUpperCase();
+    if(!val) allFilled = false;
+    if(val === s.answer){
+      input.style.borderColor = 'var(--green)';
+      roundScore++;
+    } else if(val){
+      input.style.borderColor = 'var(--red)';
+    }
+  });
+  if(!document.getElementById('check3').dataset.scored){
+    score += roundScore;
+    document.getElementById('check3').dataset.scored = '1';
+    updateScorePill();
+  }
+  document.getElementById('next3').disabled = false;
+  document.getElementById('check3').textContent = 'Rechecked ✓  (' + roundScore + '/' + scrambles.length + ' correct this pass)';
+  if(!allFilled){
+    document.getElementById('check3').textContent += ' — some fields still empty';
+  }
+}
+
+// ---------- STATION 4: ROE ----------
+const roeOpts = [
+  {t:'Shop A — higher profit per item always wins', correct:false},
+  {t:'Shop B — higher sales volume always wins', correct:false},
+  {t:'Can\'t say for sure — depends on exactly how many each sells', correct:true},
+];
+function buildROE(){
+  totalPossible += 1;
+  const box = document.getElementById('roeOptions');
+  box.innerHTML = '';
+  roeOpts.forEach(o=>{
+    const d=document.createElement('div');
+    d.className='opt';
+    d.textContent=o.t;
+    d.onclick=()=>{
+      lockOptions(box);
+      const fb=document.getElementById('fb4a');
+      fb.classList.add('show');
+      if(o.correct){
+        d.classList.add('correct'); score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — total earnings = profit per item × number sold. Shop A earns more per item, but Shop B might sell so much more that it wins overall. You would need actual numbers to know for sure.';
+      } else {
+        d.classList.add('wrong'); fb.classList.add('bad');
+        fb.textContent = 'Trick question! Total earnings = profit per item × items sold. A higher margin OR higher volume alone doesn\'t guarantee more total profit — it depends on both numbers together.';
+      }
+      updateScorePill();
+      document.getElementById('pricingCard').style.display='block';
+    };
+    box.appendChild(d);
+  });
+}
+
+// ---------- STATION 4: PRICING ----------
+const pricingOpts = [
+  {t:'Set it as low as possible to sell the most', correct:false},
+  {t:'Set it as high as possible to earn the most per sale', correct:false},
+  {t:'Test a few prices and pick the one where (profit per item × items sold) is highest', correct:true},
+  {t:'Keep it exactly the same, price never affects total profit', correct:false},
+];
+function buildPricing(){
+  totalPossible += 1;
+  const box = document.getElementById('pricingOptions');
+  box.innerHTML = '';
+  pricingOpts.forEach(o=>{
+    const d=document.createElement('div');
+    d.className='opt';
+    d.textContent=o.t;
+    d.onclick=()=>{
+      lockOptions(box);
+      const fb=document.getElementById('fb4b');
+      fb.classList.add('show');
+      if(o.correct){
+        d.classList.add('correct'); score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — the sweet spot balances profit-per-item against volume. Too low and you sell a lot for nothing; too high and nobody buys. The best price is the one where total profit peaks.';
+      } else {
+        d.classList.add('wrong'); fb.classList.add('bad');
+        fb.textContent = 'The smart move is testing prices and comparing total profit (profit per item × items sold) — not just going as high or low as possible.';
+      }
+      updateScorePill();
+      document.getElementById('next4').disabled = false;
+    };
+    box.appendChild(d);
+  });
+}
+
+// ---------- STATION 5: CAPACITY ----------
+const capOpts = [
+  {t:'85', correct:false},
+  {t:'105', correct:true},
+  {t:'125', correct:false},
+  {t:'75', correct:false},
+];
+function buildCapacity(){
+  totalPossible += 1;
+  const box = document.getElementById('capacityOptions');
+  box.innerHTML = '';
+  capOpts.forEach(o=>{
+    const d=document.createElement('div');
+    d.className='opt';
+    d.textContent=o.t;
+    d.onclick=()=>{
+      lockOptions(box);
+      const fb=document.getElementById('fb5');
+      fb.classList.add('show');
+      if(o.correct){
+        d.classList.add('correct'); score++;
+        fb.classList.add('good');
+        fb.textContent = 'Correct — Machine=20, Pallet=5, Gear=5. Pallet + (Machine × Gear) = 5 + (20×5) = 105.';
+      } else {
+        d.classList.add('wrong'); fb.classList.add('bad');
+        fb.textContent = 'The answer is 105 — Machine=20, Pallet=5, Gear=5, then Pallet + (Machine × Gear) = 5 + 100 = 105 (mind the order of operations).';
+      }
+      updateScorePill();
+      document.getElementById('next5').disabled = false;
+    };
+    box.appendChild(d);
+  });
+}
+
+// init
+buildMaze(); buildBCG(); buildAnsoff(); buildUnscramble(); buildROE(); buildPricing(); buildCapacity();
+updateScorePill();
+renderTrack();
+</script>
+</body>
+</html>
